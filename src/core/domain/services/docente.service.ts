@@ -5,19 +5,14 @@ import { DocenteRepository } from "../ports/outbound/docente.repository";
 export class DocenteService{
     constructor(private readonly docenteRepository:DocenteRepository){}
 
+    findAll(){
+        return this.docenteRepository.findAll();
+    }
 
     findOneById(id:string){
         return this.docenteRepository.findOneById(id);
     }
-
-    getDocentesSlice(limit: number, offset: number) {
-        return this.docenteRepository.findBySlice(limit, offset)
-    }
-
-    getDocentesCount() {
-        return this.docenteRepository.count()
-    }
-
+    
     createDocente(docente:Docente){
         return this.docenteRepository.createDocente(docente);
     }

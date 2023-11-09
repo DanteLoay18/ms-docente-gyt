@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable  } from "@nestjs/common";
 import { DocenteService } from "src/core/domain/services/docente.service";
+import { Paginated } from "../utils/Paginated";
 
 
 @Injectable()
@@ -31,7 +32,36 @@ export class DocenteUseCase{
 
    
     async getAllDocentes(page:number, pageSize:number){
-        return "Hola Mundo"
+        try{
+            const docentes= await this.docenteService.findAll();
+
+            const startIndex = (page - 1 )*pageSize;
+            const endIndex = startIndex + pageSize;
+
+            if(docentes.length === 0 && page !==1){
+                const startIndex = (page - 2 )*pageSize;
+                const endIndex = startIndex + pageSize;
+                return {
+                    page:page-1,
+                    pageSize:pageSize,
+                    items: docentes.slice(startIndex,endIndex),
+                    total: docentes.length
+                }
+            }
+            return Paginated.create({
+                page,
+                pageSize,
+                items: docentes.slice(startIndex,endIndex),
+                total: docentes.length
+            });
+
+        }catch(error){
+            this.handleExceptions(error)
+        }
+    }
+
+    async GetDocentesByFacultad(){
+        
     }
    
 

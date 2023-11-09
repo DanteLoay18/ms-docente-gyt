@@ -10,6 +10,10 @@ export class MongoDocenteRepository implements DocenteRepository {
     
     constructor(@InjectModel(Docente.name) private docenteRepository: Model<Docente>) { }
     
+    findAll(): Promise<Docente[]> {
+        return this.docenteRepository.find();
+    }
+
     createDocente(docente: Docente){
         return this.docenteRepository.create(docente);
     }
@@ -21,13 +25,7 @@ export class MongoDocenteRepository implements DocenteRepository {
     findOneById(id:string){
         return this.docenteRepository.findById(id);
     }
-    findBySlice(limit: number, offset: number){
-
-        return this.docenteRepository.find().limit(limit).skip(offset)
-    }
-    count(){
-        return this.docenteRepository.countDocuments()
-    }
+   
     
     actualizarBloqueo(id:string,esBloqueado:boolean){
         return this.docenteRepository.findByIdAndUpdate(id, {
