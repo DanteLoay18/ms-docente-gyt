@@ -1,6 +1,9 @@
 import { BadRequestException, Injectable  } from "@nestjs/common";
 import { DocenteService } from "src/core/domain/services/docente.service";
 import { Paginated } from "../utils/Paginated";
+import { CreateDocenteDto } from "src/core/shared/dtos/create-docente.dto";
+import { Docente } from "src/core/domain/entity/docente.entity";
+import { UpdateDocenteDto } from "src/core/shared/dtos/update-docente.dto";
 
 
 @Injectable()
@@ -60,9 +63,77 @@ export class DocenteUseCase{
         }
     }
 
-    async GetDocentesByFacultad(){
-        
+    async busquedaDocente(){
+
     }
+
+    async createDocente(createDocenteDto:CreateDocenteDto, usuarioCreacion:string){
+        try {
+
+            //TODO: Buscar y si ya existe un docente con ese nombre que devuelva un error
+
+            const docente = Docente.CreateDocente(createDocenteDto.nombreCompleto, createDocenteDto.idEscuela, createDocenteDto.idFacultad, createDocenteDto.email,usuarioCreacion);
+           
+            const docenteCreado= await this.docenteService.createDocente(docente);
+
+            if(!docenteCreado)
+                return {
+                    success:false,
+                    message:"El docente no se pudo registrar correctamente"
+                }
+
+            return {
+                success:true,
+                message:"El docente se creo correctamente"
+            }
+        } catch (error) {
+            this.handleExceptions(error)
+        }
+    }
+
+    async updateDocente(idDocente:string, updateDocenteDto:UpdateDocenteDto, usuarioModificacion:string){
+        try {
+
+            const docenteEncontrado = await this.getDocenteById(idDocente);
+
+            if(!docenteEncontrado)
+            return {
+                success:false,
+                message: "El docente no existe"
+            }
+
+            if(docenteEncontrado.value?.['esInactivo'])
+            return {
+                success:false,
+                message:"El docente esta inactivo no puede realizar ningun cambio"
+            }
+        
+            //TODO: Buscar y si ya existe un docente con ese nombre que devuelva un error
+
+            await this.bloquearDocente(idDocente, true)
+
+            const docente = Docente.UpdateDocente(updateDocenteDto.nombreCompleto, updateDocenteDto.idEscuela, updateDocenteDto.idFacultad, updateDocenteDto.email,usuarioModificacion);
+           
+            const docenteActualizado= await this.docenteService.updateDocente(idDocente,docente);
+
+            if(!docenteActualizado)
+                return {
+                    success:false,
+                    message:"El docente no se pudo registrar correctamente"
+                }
+
+            return {
+                success:true,
+                message:"El docente se actualizo correctamente"
+            }
+        } catch (error) {
+            this.handleExceptions(error)
+        } finally{
+            await this.bloquearDocente(idDocente, false)
+        }
+    }
+
+
    
 
 
