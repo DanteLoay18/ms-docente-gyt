@@ -4,6 +4,7 @@ import { Paginated } from "../utils/Paginated";
 import { CreateDocenteDto } from "src/core/shared/dtos/create-docente.dto";
 import { Docente } from "src/core/domain/entity/docente.entity";
 import { UpdateDocenteDto } from "src/core/shared/dtos/update-docente.dto";
+import { FindByBusquedaDto } from "src/core/shared/dtos/find-by-busqueda.dto";
 
 
 @Injectable()
@@ -63,8 +64,34 @@ export class DocenteUseCase{
         }
     }
 
-    async busquedaDocente(){
+    
 
+    async getDocentesByBusqueda(findByBusquedaDto:FindByBusquedaDto){
+        try{
+            let docentes= await this.docenteService.findAll();
+
+            docentes= docentes.filter(docente => {
+                const nombreCoincide = !findByBusquedaDto.nombreCompleto || docente.nombreCompleto.toUpperCase().includes(findByBusquedaDto.nombreCompleto.toUpperCase());
+            
+                const email = !findByBusquedaDto.email || docente.email.toUpperCase().includes(findByBusquedaDto.email.toUpperCase());
+              
+                const escuela = !findByBusquedaDto.idEscuela || docente.idEscuela.toUpperCase().includes(findByBusquedaDto.idEscuela.toUpperCase());
+      
+                const facultad = !findByBusquedaDto.idFacultad || docente.idFacultad === findByBusquedaDto.idFacultad;
+            
+                return nombreCoincide && email && escuela && facultad;
+              });
+
+              return Paginated.create({
+                page:findByBusquedaDto.page,
+                pageSize:findByBusquedaDto.pageSize,
+                items: docentes,
+                total: docentes.length
+              })
+
+        }catch(error){
+            this.handleExceptions(error)
+        }
     }
 
     async createDocente(createDocenteDto:CreateDocenteDto, usuarioCreacion:string){

@@ -2,10 +2,11 @@ import { Controller } from '@nestjs/common';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { MessagePattern } from '@nestjs/microservices';
 import { FindAllDocentesRequest } from '../model/find-all-docentes.request';
-import { FindAllDocentesQuery, FindByIdQuery } from 'src/core/application/features/read';
+import { FindAllDocentesQuery, FindByBusquedaQuery, FindByIdQuery } from 'src/core/application/features/read';
 import { CreateDocenteCommand, UpdateDocenteCommand } from 'src/core/application/features/write';
 import { CreateDocenteRequest } from '../model/create-docente.request';
 import { UpdateDocenteRequest } from '../model/update-docente.request';
+import { FindByBusquedaRequest } from '../model/find-by-busqueda.request';
 
 
 
@@ -26,6 +27,13 @@ export class DocenteController{
         
     }
     
+    @MessagePattern({cmd: 'findByBusqueda_docente'})
+    async findByBusqueda(findByBusquedaRequest:FindByBusquedaRequest) {
+
+        return await this.query.execute(new FindByBusquedaQuery(findByBusquedaRequest));
+        
+    }
+
     @MessagePattern({cmd: 'findOne_docente'})
     async findById(idDocente:string) {
 
