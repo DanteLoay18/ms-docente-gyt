@@ -97,7 +97,21 @@ export class DocenteUseCase{
     async createDocente(createDocenteDto:CreateDocenteDto, usuarioCreacion:string){
         try {
 
-            //TODO: Buscar y si ya existe un docente con ese nombre que devuelva un error
+            const nombreEncontrado = await this.findOneByTerm("nombreCompleto", createDocenteDto.nombreCompleto, "");
+
+            if(nombreEncontrado)
+                return {
+                    success:nombreEncontrado.success,
+                    message:nombreEncontrado.message
+                }
+
+            const emailEncontrado= await this.findOneByTerm("email",createDocenteDto.email,"");
+
+            if(emailEncontrado)
+            return {
+                success:emailEncontrado.success,
+                message:emailEncontrado.message
+            }
 
             const docente = Docente.CreateDocente(createDocenteDto.nombreCompleto, createDocenteDto.idEscuela, createDocenteDto.idFacultad, createDocenteDto.email,usuarioCreacion);
            
@@ -133,9 +147,29 @@ export class DocenteUseCase{
             return {
                 success:false,
                 message:"El docente esta inactivo no puede realizar ningun cambio"
+            }     
+
+            if(updateDocenteDto.nombreCompleto){
+                const nombreEncontrado = await this.findOneByTerm("nombreCompleto", updateDocenteDto.nombreCompleto, docenteEncontrado?.['_id']);
+
+                if(nombreEncontrado)
+                    return {
+                        success:nombreEncontrado.success,
+                        message:nombreEncontrado.message
+                    }
+
+            
             }
-        
-            //TODO: Buscar y si ya existe un docente con ese nombre que devuelva un error
+
+            if(updateDocenteDto.email){
+                const emailEncontrado= await this.findOneByTerm("email",updateDocenteDto.email,docenteEncontrado?.['_id']);
+
+                if(emailEncontrado)
+                return {
+                    success:emailEncontrado.success,
+                    message:emailEncontrado.message
+                }
+            }
 
             await this.bloquearDocente(idDocente, true)
 
@@ -160,7 +194,38 @@ export class DocenteUseCase{
         }
     }
 
+    async modificarEstado(idDocente:string, esInactivo:boolean, usuarioModificacion:string){
+        const docenteEncontrado = await this.getDocenteById(idDocente);
 
+        if(!docenteEncontrado)
+        return {
+            success:false,
+            message: "El docente no existe"
+        }
+
+        if(docenteEncontrado.value?.['esInactivo']===esInactivo){
+            const estado= esInactivo ? "inactivo" :"activo";
+            return {
+                success:false,
+                message: `El docente ya esta ${estado}`
+            }
+        }
+
+        const docente = Docente.ModificarEstado(esInactivo,usuarioModificacion);
+           
+        const docenteActualizado= await this.docenteService.updateDocente(idDocente,docente);
+
+        if(!docenteActualizado)
+            return {
+                success:false,
+                message:"El docente no se pudo registrar correctamente"
+            }
+
+        return {
+            success:true,
+            message:"El docente se actualizo correctamente"
+        }
+    }
    
 
 
@@ -173,6 +238,16 @@ export class DocenteUseCase{
         }
     }
     
+    async findOneByTerm(term:string, valor:string, id:string){
+        let docente= await this.docenteService.findOneByTerm(term, valor);
+
+        if(docente && docente._id!==id)
+        return {
+                success:false,
+                message:`El ${term} ${valor} ya esta registrado`
+            }
+       
+    }
 
 
     private handleExceptions(error:any){

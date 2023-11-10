@@ -14,6 +14,10 @@ export class MongoDocenteRepository implements DocenteRepository {
         return this.docenteRepository.find();
     }
 
+    findOneByTerm(termino:string, valor:string):Promise<Docente>{
+        return this.docenteRepository.findOne({[termino]:valor})
+    }
+
     createDocente(docente: Docente){
         return this.docenteRepository.create(docente);
     }
@@ -32,6 +36,8 @@ export class MongoDocenteRepository implements DocenteRepository {
             esBloqueado  
             }, {new:true})
     }
+
+
    
     
    

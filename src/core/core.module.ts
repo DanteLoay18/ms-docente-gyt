@@ -6,7 +6,7 @@ import { FindAllDocentesHandler, FindAllDocentesQuery, FindByBusquedaHandler, Fi
 import { DocenteService } from './domain/services/docente.service';
 import { DocenteRepository } from './domain/ports/outbound/docente.repository';
 import { DocenteUseCase } from './application/services/docente.use-case';
-import { CreateDocenteCommand, CreateDocenteHandler, UpdateDocenteCommand, UpdateDocenteHandler } from './application/features/write';
+import { CreateDocenteCommand, CreateDocenteHandler, ModificarEstadoCommand, ModificarEstadoHandler, UpdateDocenteCommand, UpdateDocenteHandler } from './application/features/write';
 
 
 const DOCENTE_PROVIDERS=[
@@ -19,7 +19,9 @@ const DOCENTE_PROVIDERS=[
     CreateDocenteCommand,
     CreateDocenteHandler,
     UpdateDocenteCommand,
-    UpdateDocenteHandler
+    UpdateDocenteHandler,
+    ModificarEstadoCommand,
+    ModificarEstadoHandler
 ]
 
 

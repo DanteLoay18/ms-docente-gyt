@@ -38,5 +38,14 @@ export class Docente extends Base{
         return docente;
     }
 
+    static ModificarEstado(esInactivo:boolean, usuarioModificacion:string){
+        const docente = new Docente();
+
+        docente.esInactivo=esInactivo;
+        docente.usuarioModificacion=usuarioModificacion;
+        docente.fechaModificacion = new Date();
+        return docente;
+    }
+
   
 }
