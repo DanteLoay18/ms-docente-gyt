@@ -14,8 +14,8 @@ export class MongoDocenteRepository implements DocenteRepository {
         return this.docenteRepository.find();
     }
 
-    findOneByTerm(termino:string, valor:string):Promise<Docente>{
-        return this.docenteRepository.findOne({[termino]:valor})
+    findByTerm(termino:string, valor:string):Promise<Docente[]>{
+        return this.docenteRepository.find({[termino]:valor})
     }
 
     createDocente(docente: Docente){

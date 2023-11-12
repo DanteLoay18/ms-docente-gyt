@@ -6,6 +6,6 @@ export interface DocenteRepository{
     findAll():Promise<Docente[]>;
     findOneById(id:string):Promise<Docente>;
     actualizarBloqueo(id:string,esBloqueado:boolean):Promise<Docente>;
-    findOneByTerm(termino:string, valor:string):Promise<Docente>;
+    findByTerm(termino:string, valor:string):Promise<Docente[]>;
     
 }

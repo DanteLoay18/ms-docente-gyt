@@ -97,7 +97,7 @@ export class DocenteUseCase{
     async createDocente(createDocenteDto:CreateDocenteDto, usuarioCreacion:string){
         try {
 
-            const nombreEncontrado = await this.findOneByTerm("nombreCompleto", createDocenteDto.nombreCompleto, "");
+            const nombreEncontrado = await this.findOneByTerm("nombreCompleto", createDocenteDto.nombreCompleto, "", createDocenteDto.idFacultad);
 
             if(nombreEncontrado)
                 return {
@@ -105,7 +105,7 @@ export class DocenteUseCase{
                     message:nombreEncontrado.message
                 }
 
-            const emailEncontrado= await this.findOneByTerm("email",createDocenteDto.email,"");
+            const emailEncontrado= await this.findOneByTerm("email",createDocenteDto.email,"",createDocenteDto.idFacultad);
 
             if(emailEncontrado)
             return {
@@ -134,7 +134,7 @@ export class DocenteUseCase{
 
     async updateDocente(idDocente:string, updateDocenteDto:UpdateDocenteDto, usuarioModificacion:string){
         try {
-
+            
             const docenteEncontrado = await this.getDocenteById(idDocente);
 
             if(!docenteEncontrado)
@@ -150,7 +150,7 @@ export class DocenteUseCase{
             }     
 
             if(updateDocenteDto.nombreCompleto){
-                const nombreEncontrado = await this.findOneByTerm("nombreCompleto", updateDocenteDto.nombreCompleto, docenteEncontrado?.['_id']);
+                const nombreEncontrado = await this.findOneByTerm("nombreCompleto", updateDocenteDto.nombreCompleto, docenteEncontrado?.["value"]?.['_id'], updateDocenteDto.idFacultad);
 
                 if(nombreEncontrado)
                     return {
@@ -162,7 +162,7 @@ export class DocenteUseCase{
             }
 
             if(updateDocenteDto.email){
-                const emailEncontrado= await this.findOneByTerm("email",updateDocenteDto.email,docenteEncontrado?.['_id']);
+                const emailEncontrado= await this.findOneByTerm("email",updateDocenteDto.email,docenteEncontrado?.["value"]?.['_id'], updateDocenteDto.idFacultad);
 
                 if(emailEncontrado)
                 return {
@@ -170,6 +170,7 @@ export class DocenteUseCase{
                     message:emailEncontrado.message
                 }
             }
+
 
             await this.bloquearDocente(idDocente, true)
 
@@ -238,10 +239,11 @@ export class DocenteUseCase{
         }
     }
     
-    async findOneByTerm(term:string, valor:string, id:string){
-        let docente= await this.docenteService.findOneByTerm(term, valor);
-
-        if(docente && docente._id!==id)
+    async findOneByTerm(term:string, valor:string, idDocente:string, idFacultad:string){
+        let docentes= await this.docenteService.findByterm(term, valor);
+        const docentesEncontradoPorFacultad= docentes.find((docente)=>docente.idFacultad===idFacultad && docente._id!==idDocente);
+      
+        if(docentesEncontradoPorFacultad)
         return {
                 success:false,
                 message:`El ${term} ${valor} ya esta registrado`

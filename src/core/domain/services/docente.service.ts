@@ -9,8 +9,8 @@ export class DocenteService{
         return this.docenteRepository.findAll();
     }
 
-    findOneByTerm(termino:string, valor:string){
-        return this.docenteRepository.findOneByTerm(termino, valor);
+    findByterm(termino:string, valor:string){
+        return this.docenteRepository.findByTerm(termino, valor);
     }
 
     findOneById(id:string){
