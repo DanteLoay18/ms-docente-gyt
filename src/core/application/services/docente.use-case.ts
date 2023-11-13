@@ -35,10 +35,13 @@ export class DocenteUseCase{
     }
 
    
-    async getAllDocentes(page:number, pageSize:number){
+    async getAllDocentes(page:number, pageSize:number, idEscuela:string){
         try{
-            const docentes= await this.docenteService.findAll();
+            let docentes= await this.docenteService.findAll();
 
+            if(idEscuela)
+            docentes= docentes.filter((docente)=>docente.idEscuela===idEscuela);
+          
             const startIndex = (page - 1 )*pageSize;
             const endIndex = startIndex + pageSize;
 
@@ -57,7 +60,7 @@ export class DocenteUseCase{
                 pageSize,
                 items: docentes.slice(startIndex,endIndex),
                 total: docentes.length
-            });
+            });       
 
         }catch(error){
             this.handleExceptions(error)
@@ -69,6 +72,9 @@ export class DocenteUseCase{
     async getDocentesByBusqueda(findByBusquedaDto:FindByBusquedaDto){
         try{
             let docentes= await this.docenteService.findAll();
+
+            if(findByBusquedaDto.idEscuelaUsuario)
+            docentes= docentes.filter((docente)=>docente.idEscuela===findByBusquedaDto.idEscuelaUsuario)
 
             docentes= docentes.filter(docente => {
                 const nombreCoincide = !findByBusquedaDto.nombreCompleto || docente.nombreCompleto.toUpperCase().includes(findByBusquedaDto.nombreCompleto.toUpperCase());

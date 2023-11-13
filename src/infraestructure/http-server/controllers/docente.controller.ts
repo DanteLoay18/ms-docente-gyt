@@ -22,9 +22,9 @@ export class DocenteController{
 
 
     @MessagePattern({cmd: 'findAll_docentes'})
-    async findAllDocentes({page, pageSize}:FindAllDocentesRequest) {
+    async findAllDocentes({page, pageSize, idEscuela}:FindAllDocentesRequest) {
 
-        return await this.query.execute(new FindAllDocentesQuery(page,pageSize));
+        return await this.query.execute(new FindAllDocentesQuery(page,pageSize, idEscuela));
         
     }
     

@@ -13,4 +13,6 @@ export class FindByBusquedaRequest{
     idEscuela?:string;
 
     idFacultad?:string;
+
+    idEscuelaUsuario:string;
 }
