@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { AdaptersModule, DOCENTE_REPOSITORY } from 'src/infraestructure/adapters/adapters.module';
 import { PersistenceModule } from 'src/infraestructure/persistence/persistence.module';
-import { FindAllDocentesHandler, FindAllDocentesQuery, FindByBusquedaHandler, FindByBusquedaQuery, FindByIdHandler, FindByIdQuery } from './application/features/read';
+import { FindAllDocentesHandler, FindAllDocentesQuery, FindByBusquedaHandler, FindByBusquedaQuery, FindByFacultadHandler, FindByFacultadQuery, FindByIdHandler, FindByIdQuery } from './application/features/read';
 import { DocenteService } from './domain/services/docente.service';
 import { DocenteRepository } from './domain/ports/outbound/docente.repository';
 import { DocenteUseCase } from './application/services/docente.use-case';
 import { CreateDocenteCommand, CreateDocenteHandler, ModificarEstadoCommand, ModificarEstadoHandler, UpdateDocenteCommand, UpdateDocenteHandler } from './application/features/write';
+
 
 
 const DOCENTE_PROVIDERS=[
@@ -16,6 +17,8 @@ const DOCENTE_PROVIDERS=[
     FindByIdHandler,
     FindByBusquedaQuery,
     FindByBusquedaHandler,
+    FindByFacultadQuery,
+    FindByFacultadHandler,
     CreateDocenteCommand,
     CreateDocenteHandler,
     UpdateDocenteCommand,

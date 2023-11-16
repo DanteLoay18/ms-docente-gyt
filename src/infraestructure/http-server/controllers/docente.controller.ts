@@ -2,12 +2,13 @@ import { Controller } from '@nestjs/common';
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { MessagePattern } from '@nestjs/microservices';
 import { FindAllDocentesRequest } from '../model/find-all-docentes.request';
-import { FindAllDocentesQuery, FindByBusquedaQuery, FindByIdQuery } from 'src/core/application/features/read';
+import { FindAllDocentesQuery, FindByBusquedaQuery, FindByFacultadQuery, FindByIdQuery } from 'src/core/application/features/read';
 import { CreateDocenteCommand, ModificarEstadoCommand, UpdateDocenteCommand } from 'src/core/application/features/write';
 import { CreateDocenteRequest } from '../model/create-docente.request';
 import { UpdateDocenteRequest } from '../model/update-docente.request';
 import { FindByBusquedaRequest } from '../model/find-by-busqueda.request';
 import { ModifciarEstadoRequest } from '../model/modificar-estado.request';
+import { FindByFacultadRequest } from '../model/find-by-facultad.request';
 
 
 
@@ -32,6 +33,13 @@ export class DocenteController{
     async findByBusqueda(findByBusquedaRequest:FindByBusquedaRequest) {
 
         return await this.query.execute(new FindByBusquedaQuery(findByBusquedaRequest));
+        
+    }
+
+    @MessagePattern({cmd: 'findByFacultad_docente'})
+    async findByFacultad({idFacultad}:FindByFacultadRequest) {
+
+        return await this.query.execute(new FindByFacultadQuery(idFacultad));
         
     }
 
