@@ -35,12 +35,12 @@ export class DocenteUseCase{
     }
 
    
-    async getAllDocentes(page:number, pageSize:number, idEscuela:string){
+    async getAllDocentes(page:number, pageSize:number, idFacultad:string){
         try{
             let docentes= await this.docenteService.findAll();
 
-            if(idEscuela)
-            docentes= docentes.filter((docente)=>docente.idEscuela===idEscuela);
+            if(idFacultad)
+            docentes= docentes.filter((docente)=>docente.idFacultad===idFacultad);
           
             const startIndex = (page - 1 )*pageSize;
             const endIndex = startIndex + pageSize;
@@ -73,8 +73,8 @@ export class DocenteUseCase{
         try{
             let docentes= await this.docenteService.findAll();
 
-            if(findByBusquedaDto.idEscuelaUsuario)
-            docentes= docentes.filter((docente)=>docente.idEscuela===findByBusquedaDto.idEscuelaUsuario)
+            if(findByBusquedaDto.idFacultadUsuario)
+            docentes= docentes.filter((docente)=>docente.idFacultad===findByBusquedaDto.idFacultadUsuario)
 
             docentes= docentes.filter(docente => {
                 const nombreCoincide = !findByBusquedaDto.nombreCompleto || docente.nombreCompleto.toUpperCase().includes(findByBusquedaDto.nombreCompleto.toUpperCase());
@@ -100,11 +100,11 @@ export class DocenteUseCase{
         }
     }
 
-    async GetDocentesByFacultad(idFacultad:string){
+    async GetDocentesByEscuela(idEscuela:string){
         try {
             let docentes= await this.docenteService.findAll();
 
-            docentes= docentes.filter((docente)=>docente.idFacultad===idFacultad);
+            docentes= docentes.filter((docente)=>docente.idEscuela===idEscuela);
 
             return {
                 success:true,
@@ -120,7 +120,7 @@ export class DocenteUseCase{
     async createDocente(createDocenteDto:CreateDocenteDto, usuarioCreacion:string){
         try {
 
-            const nombreEncontrado = await this.findOneByTerm("nombreCompleto", createDocenteDto.nombreCompleto, "", createDocenteDto.idFacultad);
+            const nombreEncontrado = await this.findOneByTerm("nombreCompleto", createDocenteDto.nombreCompleto, "", createDocenteDto.idEscuela);
 
             if(nombreEncontrado)
                 return {
@@ -128,7 +128,7 @@ export class DocenteUseCase{
                     message:nombreEncontrado.message
                 }
 
-            const emailEncontrado= await this.findOneByTerm("email",createDocenteDto.email,"",createDocenteDto.idFacultad);
+            const emailEncontrado= await this.findOneByTerm("email",createDocenteDto.email,"",createDocenteDto.idEscuela);
 
             if(emailEncontrado)
             return {
@@ -173,7 +173,7 @@ export class DocenteUseCase{
             }     
 
             if(updateDocenteDto.nombreCompleto){
-                const nombreEncontrado = await this.findOneByTerm("nombreCompleto", updateDocenteDto.nombreCompleto, docenteEncontrado?.["value"]?.['_id'], updateDocenteDto.idFacultad);
+                const nombreEncontrado = await this.findOneByTerm("nombreCompleto", updateDocenteDto.nombreCompleto, docenteEncontrado?.["value"]?.['_id'], updateDocenteDto.idEscuela);
 
                 if(nombreEncontrado)
                     return {
@@ -185,7 +185,7 @@ export class DocenteUseCase{
             }
 
             if(updateDocenteDto.email){
-                const emailEncontrado= await this.findOneByTerm("email",updateDocenteDto.email,docenteEncontrado?.["value"]?.['_id'], updateDocenteDto.idFacultad);
+                const emailEncontrado= await this.findOneByTerm("email",updateDocenteDto.email,docenteEncontrado?.["value"]?.['_id'], updateDocenteDto.idEscuela);
 
                 if(emailEncontrado)
                 return {
@@ -262,11 +262,11 @@ export class DocenteUseCase{
         }
     }
     
-    async findOneByTerm(term:string, valor:string, idDocente:string, idFacultad:string){
+    async findOneByTerm(term:string, valor:string, idDocente:string, idEscuela:string){
         let docentes= await this.docenteService.findByterm(term, valor);
-        const docentesEncontradoPorFacultad= docentes.find((docente)=>docente.idFacultad===idFacultad && docente._id!==idDocente);
+        const docentesEncontradoPorEscuela= docentes.find((docente)=>docente.idEscuela===idEscuela && docente._id!==idDocente);
       
-        if(docentesEncontradoPorFacultad)
+        if(docentesEncontradoPorEscuela)
         return {
                 success:false,
                 message:`El ${term} ${valor} ya esta registrado`

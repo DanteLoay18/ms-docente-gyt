@@ -14,5 +14,5 @@ export class FindByBusquedaRequest{
 
     idFacultad?:string;
 
-    idEscuelaUsuario:string;
+    idFacultadUsuario:string;
 }

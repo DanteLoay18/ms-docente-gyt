@@ -9,7 +9,7 @@ export class FindAllDocentesHandler implements IQueryHandler<FindAllDocentesQuer
 
     execute(query: FindAllDocentesQuery) {
         
-        return this.docenteUseCases.getAllDocentes(query.page, query.pageSize, query.idEscuela);
+        return this.docenteUseCases.getAllDocentes(query.page, query.pageSize, query.idFacultad);
     }
 
 }

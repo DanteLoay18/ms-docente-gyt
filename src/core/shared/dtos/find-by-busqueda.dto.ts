@@ -5,7 +5,7 @@ export interface FindByBusquedaDto{
 
     pageSize:number;
 
-    idEscuelaUsuario:string;
+    idFacultadUsuario:string;
 
     nombreCompleto?:string;
 
