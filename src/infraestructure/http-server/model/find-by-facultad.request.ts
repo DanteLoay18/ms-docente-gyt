@@ -1,5 +1,5 @@
 
 
 export class FindByFacultadRequest{
-    idEscuela:string;
+    idFacultad:string;
 }

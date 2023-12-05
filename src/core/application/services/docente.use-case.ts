@@ -117,6 +117,23 @@ export class DocenteUseCase{
         }
     }
 
+    async GetDocentesByFacultad(idFacultad:string){
+        try {
+            let docentes= await this.docenteService.findAll();
+
+            docentes= docentes.filter((docente)=>docente.idFacultad===idFacultad);
+
+            return {
+                success:true,
+                message:"",
+                value:docentes
+            }
+
+        } catch (error) {
+            this.handleExceptions(error);
+        }
+    }
+
     async createDocente(createDocenteDto:CreateDocenteDto, usuarioCreacion:string){
         try {
 
