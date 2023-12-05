@@ -105,7 +105,7 @@ export class DocenteUseCase{
             let docentes= await this.docenteService.findAll();
 
             docentes= docentes.filter((docente)=>docente.idEscuela===idEscuela);
-
+            
             return {
                 success:true,
                 message:"",
@@ -122,6 +122,10 @@ export class DocenteUseCase{
             let docentes= await this.docenteService.findAll();
 
             docentes= docentes.filter((docente)=>docente.idFacultad===idFacultad);
+            
+            docentes= docentes.filter((docente, index, self) =>
+                        index === self.findIndex((d) => d.nombreCompleto === docente.nombreCompleto)
+                    );
 
             return {
                 success:true,
