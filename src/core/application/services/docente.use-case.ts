@@ -39,6 +39,8 @@ export class DocenteUseCase{
         try{
             let docentes= await this.docenteService.findAll();
 
+            docentes = docentes.sort((a, b) => (a.esInactivo === b.esInactivo) ? 0 : a.esInactivo ? 1 : -1);
+
             if(idFacultad)
             docentes= docentes.filter((docente)=>docente.idFacultad===idFacultad);
           
